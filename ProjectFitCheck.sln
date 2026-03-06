@@ -3,7 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.13.35931.197 d17.13
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProjectFitCheck", "ProjectFitCheck\ProjectFitCheck.csproj", "{133B8A28-55DB-4911-800F-595972084607}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WpfAppFitCheck", "ProjectFitCheck\WpfAppFitCheck.csproj", "{133B8A28-55DB-4911-800F-595972084607}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ClassLibraryFitCheck", "ClassLibraryFitCheck\ClassLibraryFitCheck.csproj", "{29106F13-63FC-4F8A-9ACC-B07D83CC42B9}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{36D591C7-65C7-A0D1-1CBC-10CDE441BDC8}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,9 +19,16 @@ Global
 		{133B8A28-55DB-4911-800F-595972084607}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{133B8A28-55DB-4911-800F-595972084607}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{133B8A28-55DB-4911-800F-595972084607}.Release|Any CPU.Build.0 = Release|Any CPU
+		{29106F13-63FC-4F8A-9ACC-B07D83CC42B9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{29106F13-63FC-4F8A-9ACC-B07D83CC42B9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{29106F13-63FC-4F8A-9ACC-B07D83CC42B9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{29106F13-63FC-4F8A-9ACC-B07D83CC42B9}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{29106F13-63FC-4F8A-9ACC-B07D83CC42B9} = {36D591C7-65C7-A0D1-1CBC-10CDE441BDC8}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {68ADACEE-8DC9-4B4C-A25B-1FED2EDA8C6E}

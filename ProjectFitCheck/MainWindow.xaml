@@ -5,96 +5,2149 @@
         Height="900"
         Width="1200"
         WindowStartupLocation="CenterScreen"
+        Background="#F5F5F5"
+        FontFamily="Segoe UI"
         WindowStyle="None"
-        AllowsTransparency="True"
-        Background="#F5F5F5">
+        AllowsTransparency="True">
 
+    <!-- РЕСУРСЫ ОКНА: Определение цветов, стилей и анимаций -->
     <Window.Resources>
-        <!-- Цветовая палитра -->
+        <!-- ЦВЕТОВАЯ ПАЛИТРА В СТИЛЕ MATERIAL DESIGN -->
         <Color x:Key="PrimaryColor">#7E57C2</Color>
         <Color x:Key="PrimaryDarkColor">#5E35B1</Color>
         <Color x:Key="PrimaryLightColor">#B39DDB</Color>
+        <Color x:Key="AccentColor">#FF4081</Color>
+        <Color x:Key="TextPrimary">#212121</Color>
+        <Color x:Key="TextSecondary">#757575</Color>
+        <Color x:Key="DividerColor">#BDBDBD</Color>
+        <Color x:Key="BackgroundColor">#F5F5F5</Color>
 
-        <!-- Стили кнопок -->
-        <Style x:Key="PrimaryButton"
+        <!-- Стиль для кастомного MessageBox -->
+        <Style x:Key="CustomMessageBoxButton"
                TargetType="Button">
             <Setter Property="Background"
                     Value="#7E57C2" />
             <Setter Property="Foreground"
                     Value="White" />
+            <Setter Property="BorderThickness"
+                    Value="0" />
             <Setter Property="Padding"
-                    Value="24,14" />
+                    Value="20,10" />
+            <Setter Property="Margin"
+                    Value="8,0" />
             <Setter Property="FontWeight"
                     Value="SemiBold" />
+            <Setter Property="Cursor"
+                    Value="Hand" />
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="Button">
-                        <Border Background="{TemplateBinding Background}"
-                                CornerRadius="8">
-                            <ContentPresenter HorizontalAlignment="Center"
-                                              VerticalAlignment="Center" />
+                        <Border x:Name="border"
+                                Background="{TemplateBinding Background}"
+                                CornerRadius="6"
+                                SnapsToDevicePixels="True">
+                            <ContentPresenter x:Name="contentPresenter"
+                                              Content="{TemplateBinding Content}"
+                                              HorizontalAlignment="Center"
+                                              VerticalAlignment="Center"
+                                              Margin="{TemplateBinding Padding}" />
                         </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver"
+                                     Value="True">
+                                <Setter TargetName="border"
+                                        Property="Background"
+                                        Value="#6A45B0" />
+                            </Trigger>
+                            <Trigger Property="IsPressed"
+                                     Value="True">
+                                <Setter TargetName="border"
+                                        Property="Background"
+                                        Value="#5E35B1" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
                     </ControlTemplate>
                 </Setter.Value>
             </Setter>
         </Style>
 
-        <!-- Стили для текстовых полей -->
-        <Style x:Key="ModernTextBox"
-               TargetType="TextBox">
+        <!-- ФУНКЦИИ ПЛАВНОСТИ ДЛЯ АНИМАЦИЙ -->
+        <ExponentialEase x:Key="ExponentialEaseOut"
+                         Exponent="6"
+                         EasingMode="EaseOut" />
+        <ExponentialEase x:Key="ExponentialEaseIn"
+                         Exponent="6"
+                         EasingMode="EaseIn" />
+        <CubicEase x:Key="CubicEaseOut"
+                   EasingMode="EaseOut" />
+        <CubicEase x:Key="CubicEaseIn"
+                   EasingMode="EaseIn" />
+
+        <!-- СТИЛЬ ДЛЯ КНОПКИ СВОРАЧИВАНИЯ ПАНЕЛИ НАВИГАЦИИ -->
+        <Style x:Key="CollapseButtonStyle"
+               TargetType="Button">
             <Setter Property="Background"
-                    Value="#FAFAFA" />
-            <Setter Property="BorderBrush"
-                    Value="#E0E0E0" />
+                    Value="White" />
             <Setter Property="BorderThickness"
                     Value="1" />
-            <Setter Property="Padding"
-                    Value="16,12" />
+            <Setter Property="BorderBrush"
+                    Value="#E0E0E0" />
+            <Setter Property="Foreground"
+                    Value="#757575" />
             <Setter Property="FontSize"
-                    Value="14" />
+                    Value="10" />
+            <Setter Property="Cursor"
+                    Value="Hand" />
+            <Setter Property="Padding"
+                    Value="4,2" />
+            <Setter Property="Width"
+                    Value="20" />
+            <Setter Property="Height"
+                    Value="20" />
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver"
+                         Value="True">
+                    <Setter Property="Background"
+                            Value="#7E57C2" />
+                    <Setter Property="Foreground"
+                            Value="White" />
+                    <Setter Property="BorderBrush"
+                            Value="#7E57C2" />
+                </Trigger>
+            </Style.Triggers>
         </Style>
 
-        <!-- Стили для карточек -->
+        <!-- СТИЛЬ ДЛЯ КНОПКИ СПРАВКИ В ПАНЕЛИ НАВИГАЦИИ -->
+        <Style x:Key="HelpButtonStyle"
+               TargetType="Button">
+            <Setter Property="Background"
+                    Value="Transparent" />
+            <Setter Property="BorderThickness"
+                    Value="0" />
+            <Setter Property="Foreground"
+                    Value="#7E57C2" />
+            <Setter Property="FontSize"
+                    Value="13" />
+            <Setter Property="Cursor"
+                    Value="Hand" />
+            <Setter Property="Padding"
+                    Value="12,8" />
+            <Setter Property="HorizontalContentAlignment"
+                    Value="Left" />
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver"
+                         Value="True">
+                    <Setter Property="Background"
+                            Value="#F3F0FF" />
+                    <Setter Property="Foreground"
+                            Value="#5E35B1" />
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
+        <!-- СТИЛЬ ДЛЯ ЭЛЕМЕНТОВ LISTBOX С ПЛАВНЫМИ АНИМАЦИЯМИ -->
+        <Style x:Key="ListBoxItemStyle"
+               TargetType="ListBoxItem">
+            <Setter Property="Background"
+                    Value="Transparent" />
+            <Setter Property="BorderThickness"
+                    Value="0" />
+            <Setter Property="Padding"
+                    Value="12,8" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ListBoxItem">
+                        <Border x:Name="border"
+                                Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                CornerRadius="4">
+                            <ContentPresenter x:Name="contentPresenter"
+                                              Content="{TemplateBinding Content}"
+                                              ContentTemplate="{TemplateBinding ContentTemplate}"
+                                              HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                              VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+                                              Margin="{TemplateBinding Padding}" />
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver"
+                                     Value="True">
+                                <Setter TargetName="border"
+                                        Property="Background"
+                                        Value="#F3F0FF" />
+                                <Setter TargetName="contentPresenter"
+                                        Property="TextElement.Foreground"
+                                        Value="#7E57C2" />
+                            </Trigger>
+                            <Trigger Property="IsSelected"
+                                     Value="True">
+                                <Setter TargetName="border"
+                                        Property="Background"
+                                        Value="#EDE7F6" />
+                                <Setter TargetName="contentPresenter"
+                                        Property="TextElement.Foreground"
+                                        Value="#7E57C2" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- СОВРЕМЕННЫЙ ПРОГРЕСС-БАР С ТЕНЬЮ И ЗАКРУГЛЕННЫМИ УГЛАМИ -->
+        <ControlTemplate x:Key="ModernProgressBarTemplate"
+                         TargetType="ProgressBar">
+            <Grid x:Name="TemplateRoot">
+                <Border x:Name="PART_Track"
+                        Background="#F0F0F0"
+                        CornerRadius="4"
+                        Height="8" />
+                <Border x:Name="PART_Indicator"
+                        Background="#7E57C2"
+                        CornerRadius="4"
+                        Height="8"
+                        HorizontalAlignment="Left">
+                    <Border.Effect>
+                        <DropShadowEffect ShadowDepth="0"
+                                          BlurRadius="4"
+                                          Opacity="0.3"
+                                          Color="#7E57C2" />
+                    </Border.Effect>
+                </Border>
+            </Grid>
+        </ControlTemplate>
+
+        <Style x:Key="ModernProgressBar"
+               TargetType="ProgressBar">
+            <Setter Property="Background"
+                    Value="#F0F0F0" />
+            <Setter Property="Foreground"
+                    Value="#7E57C2" />
+            <Setter Property="BorderThickness"
+                    Value="0" />
+            <Setter Property="Height"
+                    Value="8" />
+            <Setter Property="Template"
+                    Value="{StaticResource ModernProgressBarTemplate}" />
+        </Style>
+
+        <!-- КАСТОМНЫЙ СТИЛЬ СКРОЛЛБАРА С АНИМАЦИЯМИ ПРИ НАВЕДЕНИИ -->
+        <Style TargetType="ScrollBar">
+            <Setter Property="Background"
+                    Value="Transparent" />
+            <Setter Property="BorderBrush"
+                    Value="Transparent" />
+            <Setter Property="Width"
+                    Value="8" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ScrollBar">
+                        <Grid x:Name="Bg">
+                            <Track x:Name="PART_Track"
+                                   IsDirectionReversed="true">
+                                <Track.Thumb>
+                                    <Thumb x:Name="Thumb"
+                                           Background="#B39DDB"
+                                           Cursor="Hand">
+                                        <Thumb.Style>
+                                            <Style TargetType="Thumb">
+                                                <Setter Property="Background"
+                                                        Value="#B39DDB" />
+                                                <Setter Property="BorderBrush"
+                                                        Value="Transparent" />
+                                                <Setter Property="Template">
+                                                    <Setter.Value>
+                                                        <ControlTemplate TargetType="Thumb">
+                                                            <Border CornerRadius="4"
+                                                                    Background="{TemplateBinding Background}">
+                                                                <Border.Triggers>
+                                                                    <!-- Анимация изменения цвета при наведении -->
+                                                                    <EventTrigger RoutedEvent="MouseEnter">
+                                                                        <BeginStoryboard>
+                                                                            <Storyboard>
+                                                                                <ColorAnimation To="#7E57C2"
+                                                                                                Duration="0:0:0.2"
+                                                                                                Storyboard.TargetProperty="Background.Color" />
+                                                                            </Storyboard>
+                                                                        </BeginStoryboard>
+                                                                    </EventTrigger>
+                                                                    <EventTrigger RoutedEvent="MouseLeave">
+                                                                        <BeginStoryboard>
+                                                                            <Storyboard>
+                                                                                <ColorAnimation To="#B39DDB"
+                                                                                                Duration="0:0:0.2"
+                                                                                                Storyboard.TargetProperty="Background.Color" />
+                                                                            </Storyboard>
+                                                                        </BeginStoryboard>
+                                                                    </EventTrigger>
+                                                                </Border.Triggers>
+                                                            </Border>
+                                                        </ControlTemplate>
+                                                    </Setter.Value>
+                                                </Setter>
+                                            </Style>
+                                        </Thumb.Style>
+                                    </Thumb>
+                                </Track.Thumb>
+                            </Track>
+                        </Grid>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- СТИЛЬ ДЛЯ SCROLLVIEWER -->
+        <Style TargetType="ScrollViewer">
+            <Setter Property="Background"
+                    Value="Transparent" />
+            <Setter Property="BorderBrush"
+                    Value="Transparent" />
+            <Setter Property="VerticalScrollBarVisibility"
+                    Value="Auto" />
+            <Setter Property="HorizontalScrollBarVisibility"
+                    Value="Disabled" />
+        </Style>
+
+        <!-- ИНТЕРАКТИВНЫЕ КАРТОЧКИ С АНИМАЦИЯМИ ПРИ НАВЕДЕНИИ -->
         <Style x:Key="InteractiveCard"
                TargetType="Border">
             <Setter Property="Background"
                     Value="White" />
             <Setter Property="CornerRadius"
                     Value="12" />
+            <Setter Property="BorderThickness"
+                    Value="1" />
+            <Setter Property="BorderBrush"
+                    Value="#E0E0E0" />
+            <Setter Property="Margin"
+                    Value="8,12" />
+            <Setter Property="Padding"
+                    Value="0" />
+            <Setter Property="RenderTransform">
+                <Setter.Value>
+                    <ScaleTransform ScaleX="1"
+                                    ScaleY="1" />
+                </Setter.Value>
+            </Setter>
+            <Setter Property="RenderTransformOrigin"
+                    Value="0.5,0.5" />
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver"
+                         Value="True">
+                    <!-- Анимации при наведении: изменение цвета, масштабирование -->
+                    <Trigger.EnterActions>
+                        <BeginStoryboard>
+                            <Storyboard>
+                                <ColorAnimation To="#7E57C2"
+                                                Duration="0:0:0.3"
+                                                Storyboard.TargetProperty="BorderBrush.Color" />
+                                <ColorAnimation To="#FAF8FF"
+                                                Duration="0:0:0.3"
+                                                Storyboard.TargetProperty="Background.Color" />
+                                <DoubleAnimation To="1.02"
+                                                 Duration="0:0:0.3"
+                                                 Storyboard.TargetProperty="RenderTransform.ScaleX" />
+                                <DoubleAnimation To="1.02"
+                                                 Duration="0:0:0.3"
+                                                 Storyboard.TargetProperty="RenderTransform.ScaleY" />
+                            </Storyboard>
+                        </BeginStoryboard>
+                    </Trigger.EnterActions>
+                    <Trigger.ExitActions>
+                        <BeginStoryboard>
+                            <Storyboard>
+                                <ColorAnimation To="#E0E0E0"
+                                                Duration="0:0:0.3"
+                                                Storyboard.TargetProperty="BorderBrush.Color" />
+                                <ColorAnimation To="White"
+                                                Duration="0:0:0.3"
+                                                Storyboard.TargetProperty="Background.Color" />
+                                <DoubleAnimation To="1"
+                                                 Duration="0:0:0.3"
+                                                 Storyboard.TargetProperty="RenderTransform.ScaleX" />
+                                <DoubleAnimation To="1"
+                                                 Duration="0:0:0.3"
+                                                 Storyboard.TargetProperty="RenderTransform.ScaleY" />
+                            </Storyboard>
+                        </BeginStoryboard>
+                    </Trigger.ExitActions>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
+        <!-- СТИЛЬ ДЛЯ КЛИКАБЕЛЬНЫХ ПАНЕЛЕЙ -->
+        <Style x:Key="ClickablePanel"
+               TargetType="Border">
+            <Setter Property="Background"
+                    Value="White" />
+            <Setter Property="CornerRadius"
+                    Value="12" />
+            <Setter Property="BorderThickness"
+                    Value="1" />
+            <Setter Property="BorderBrush"
+                    Value="#E0E0E0" />
+            <Setter Property="Margin"
+                    Value="8,8" />
+            <Setter Property="Padding"
+                    Value="24" />
+            <Setter Property="Cursor"
+                    Value="Hand" />
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver"
+                         Value="True">
+                    <Setter Property="BorderBrush"
+                            Value="#7E57C2" />
+                    <Setter Property="Background"
+                            Value="#F3F0FF" />
+                    <Setter Property="Effect">
+                        <Setter.Value>
+                            <DropShadowEffect ShadowDepth="3"
+                                              Opacity="0.2"
+                                              BlurRadius="8" />
+                        </Setter.Value>
+                    </Setter>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
+        <!-- ШАБЛОН ДЛЯ ОСНОВНЫХ КНОПОК С ЗАКРУГЛЕННЫМИ УГЛАМИ -->
+        <ControlTemplate x:Key="RoundedButtonTemplate"
+                         TargetType="Button">
+            <Border x:Name="border"
+                    Background="{TemplateBinding Background}"
+                    BorderBrush="{TemplateBinding BorderBrush}"
+                    BorderThickness="{TemplateBinding BorderThickness}"
+                    CornerRadius="8"
+                    SnapsToDevicePixels="True">
+                <ContentPresenter x:Name="contentPresenter"
+                                  Content="{TemplateBinding Content}"
+                                  ContentTemplate="{TemplateBinding ContentTemplate}"
+                                  HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                  VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+                                  Margin="{TemplateBinding Padding}"
+                                  RecognizesAccessKey="True"
+                                  SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" />
+            </Border>
+            <ControlTemplate.Triggers>
+                <Trigger Property="IsMouseOver"
+                         Value="True">
+                    <Setter TargetName="border"
+                            Property="Background"
+                            Value="#6A45B0" />
+                    <Setter TargetName="border"
+                            Property="Effect">
+                        <Setter.Value>
+                            <DropShadowEffect ShadowDepth="2"
+                                              BlurRadius="8"
+                                              Opacity="0.3" />
+                        </Setter.Value>
+                    </Setter>
+                </Trigger>
+                <Trigger Property="IsPressed"
+                         Value="True">
+                    <Setter TargetName="border"
+                            Property="Background"
+                            Value="#5E35B1" />
+                    <Setter TargetName="border"
+                            Property="Effect">
+                        <Setter.Value>
+                            <DropShadowEffect ShadowDepth="1"
+                                              BlurRadius="4"
+                                              Opacity="0.3" />
+                        </Setter.Value>
+                    </Setter>
+                </Trigger>
+                <Trigger Property="IsEnabled"
+                         Value="False">
+                    <Setter TargetName="border"
+                            Property="Background"
+                            Value="#F5F5F5" />
+                    <Setter TargetName="border"
+                            Property="BorderBrush"
+                            Value="#E0E0E0" />
+                    <Setter TargetName="contentPresenter"
+                            Property="TextElement.Foreground"
+                            Value="#9E9E9E" />
+                </Trigger>
+            </ControlTemplate.Triggers>
+        </ControlTemplate>
+
+        <!-- ОСНОВНОЙ СТИЛЬ КНОПКИ (PRIMARY) -->
+        <Style x:Key="PrimaryButton"
+               TargetType="Button">
+            <Setter Property="Background"
+                    Value="#7E57C2" />
+            <Setter Property="Foreground"
+                    Value="White" />
+            <Setter Property="BorderThickness"
+                    Value="0" />
+            <Setter Property="Padding"
+                    Value="24,14" />
+            <Setter Property="FontWeight"
+                    Value="SemiBold" />
+            <Setter Property="FontSize"
+                    Value="14" />
+            <Setter Property="Cursor"
+                    Value="Hand" />
+            <Setter Property="Template"
+                    Value="{StaticResource RoundedButtonTemplate}" />
+        </Style>
+
+        <!-- ВТОРИЧНЫЙ СТИЛЬ КНОПКИ (SECONDARY) -->
+        <Style x:Key="SecondaryButton"
+               TargetType="Button"
+               BasedOn="{StaticResource PrimaryButton}">
+            <Setter Property="Background"
+                    Value="#EDE7F6" />
+            <Setter Property="Foreground"
+                    Value="#7E57C2" />
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver"
+                         Value="True">
+                    <Setter Property="Background"
+                            Value="#D1C4E9" />
+                </Trigger>
+                <Trigger Property="IsPressed"
+                         Value="True">
+                    <Setter Property="Background"
+                            Value="#B39DDB" />
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
+        <!-- СОВРЕМЕННЫЕ КНОПКИ ВКЛАДОК В ВИДЕ RADIOBUTTON -->
+        <ControlTemplate x:Key="RoundedRadioButtonTemplate"
+                         TargetType="RadioButton">
+            <Border x:Name="border"
+                    Background="{TemplateBinding Background}"
+                    BorderBrush="{TemplateBinding BorderBrush}"
+                    BorderThickness="{TemplateBinding BorderThickness}"
+                    CornerRadius="8"
+                    SnapsToDevicePixels="True">
+                <ContentPresenter x:Name="contentPresenter"
+                                  Content="{TemplateBinding Content}"
+                                  ContentTemplate="{TemplateBinding ContentTemplate}"
+                                  HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                  VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+                                  Margin="{TemplateBinding Padding}"
+                                  RecognizesAccessKey="True"
+                                  SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" />
+            </Border>
+            <ControlTemplate.Triggers>
+                <Trigger Property="IsChecked"
+                         Value="True">
+                    <Setter TargetName="border"
+                            Property="Background"
+                            Value="#EDE7F6" />
+                    <Setter TargetName="contentPresenter"
+                            Property="TextElement.Foreground"
+                            Value="#7E57C2" />
+                </Trigger>
+                <Trigger Property="IsMouseOver"
+                         Value="True">
+                    <Setter TargetName="border"
+                            Property="Background"
+                            Value="#F5F2FF" />
+                </Trigger>
+            </ControlTemplate.Triggers>
+        </ControlTemplate>
+
+        <Style x:Key="ModernTabButton"
+               TargetType="RadioButton">
+            <Setter Property="Background"
+                    Value="Transparent" />
+            <Setter Property="BorderThickness"
+                    Value="0" />
+            <Setter Property="Foreground"
+                    Value="#757575" />
+            <Setter Property="FontWeight"
+                    Value="SemiBold" />
+            <Setter Property="FontSize"
+                    Value="14" />
+            <Setter Property="Cursor"
+                    Value="Hand" />
+            <Setter Property="Padding"
+                    Value="20,16" />
+            <Setter Property="Margin"
+                    Value="4,2" />
+            <Setter Property="Template"
+                    Value="{StaticResource RoundedRadioButtonTemplate}" />
+        </Style>
+
+        <!-- СТИЛИ ДЛЯ ПОЛЕЙ ВВОДА -->
+        <ControlTemplate x:Key="RoundedTextBoxTemplate"
+                         TargetType="TextBox">
+            <Border x:Name="border"
+                    Background="{TemplateBinding Background}"
+                    BorderBrush="{TemplateBinding BorderBrush}"
+                    BorderThickness="{TemplateBinding BorderThickness}"
+                    CornerRadius="6"
+                    SnapsToDevicePixels="True">
+                <ScrollViewer x:Name="PART_ContentHost"
+                              Focusable="False"
+                              HorizontalScrollBarVisibility="Hidden"
+                              VerticalScrollBarVisibility="Hidden" />
+            </Border>
+            <ControlTemplate.Triggers>
+                <Trigger Property="IsMouseOver"
+                         Value="True">
+                    <Setter TargetName="border"
+                            Property="BorderBrush"
+                            Value="#B39DDB" />
+                </Trigger>
+                <Trigger Property="IsFocused"
+                         Value="True">
+                    <Setter TargetName="border"
+                            Property="BorderBrush"
+                            Value="#7E57C2" />
+                    <Setter TargetName="border"
+                            Property="Background"
+                            Value="#FFFFFF" />
+                </Trigger>
+            </ControlTemplate.Triggers>
+        </ControlTemplate>
+
+        <Style x:Key="ModernTextBox"
+               TargetType="TextBox">
+            <Setter Property="Background"
+                    Value="#FAFAFA" />
+            <Setter Property="BorderThickness"
+                    Value="1" />
+            <Setter Property="BorderBrush"
+                    Value="#E0E0E0" />
+            <Setter Property="Padding"
+                    Value="16,12" />
+            <Setter Property="FontSize"
+                    Value="14" />
+            <Setter Property="Foreground"
+                    Value="#212121" />
+            <Setter Property="Template"
+                    Value="{StaticResource RoundedTextBoxTemplate}" />
+        </Style>
+
+        <!-- СТИЛЬ ДЛЯ ВЫПАДАЮЩЕГО СПИСКА (COMBOBOX) -->
+        <Style x:Key="ComboBoxItemStyle"
+               TargetType="ComboBoxItem">
+            <Setter Property="Background"
+                    Value="Transparent" />
+            <Setter Property="BorderThickness"
+                    Value="0" />
+            <Setter Property="Padding"
+                    Value="12,8" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ComboBoxItem">
+                        <Border x:Name="border"
+                                Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                CornerRadius="4">
+                            <ContentPresenter x:Name="contentPresenter"
+                                              Content="{TemplateBinding Content}"
+                                              ContentTemplate="{TemplateBinding ContentTemplate}"
+                                              HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                              VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+                                              Margin="{TemplateBinding Padding}" />
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver"
+                                     Value="True">
+                                <Setter TargetName="border"
+                                        Property="Background"
+                                        Value="#F3F0FF" />
+                                <Setter TargetName="contentPresenter"
+                                        Property="TextElement.Foreground"
+                                        Value="#7E57C2" />
+                            </Trigger>
+                            <Trigger Property="IsSelected"
+                                     Value="True">
+                                <Setter TargetName="border"
+                                        Property="Background"
+                                        Value="#EDE7F6" />
+                                <Setter TargetName="contentPresenter"
+                                        Property="TextElement.Foreground"
+                                        Value="#7E57C2" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- ШАБЛОН COMBOBOX С АНИМАЦИЕЙ СТРЕЛКИ -->
+        <ControlTemplate x:Key="RoundedComboBoxTemplate"
+                         TargetType="ComboBox">
+            <Grid>
+                <Border x:Name="border"
+                        Background="{TemplateBinding Background}"
+                        BorderBrush="{TemplateBinding BorderBrush}"
+                        BorderThickness="{TemplateBinding BorderThickness}"
+                        CornerRadius="6"
+                        SnapsToDevicePixels="True">
+                    <Border.Triggers>
+                        <!-- Анимация изменения цвета рамки при наведении -->
+                        <EventTrigger RoutedEvent="MouseEnter">
+                            <BeginStoryboard>
+                                <Storyboard>
+                                    <ColorAnimation To="#B39DDB"
+                                                    Duration="0:0:0.3"
+                                                    Storyboard.TargetProperty="BorderBrush.Color" />
+                                </Storyboard>
+                            </BeginStoryboard>
+                        </EventTrigger>
+                        <EventTrigger RoutedEvent="MouseLeave">
+                            <BeginStoryboard>
+                                <Storyboard>
+                                    <ColorAnimation To="#E0E0E0"
+                                                    Duration="0:0:0.3"
+                                                    Storyboard.TargetProperty="BorderBrush.Color" />
+                                </Storyboard>
+                            </BeginStoryboard>
+                        </EventTrigger>
+                    </Border.Triggers>
+                </Border>
+
+                <!-- Кнопка-переключатель для открытия списка -->
+                <ToggleButton x:Name="toggleButton"
+                              Background="Transparent"
+                              BorderBrush="Transparent"
+                              BorderThickness="0"
+                              HorizontalContentAlignment="Right"
+                              VerticalContentAlignment="Center"
+                              IsChecked="{Binding IsDropDownOpen, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}"
+                              Focusable="False">
+                    <Path x:Name="arrow"
+                          Fill="#757575"
+                          HorizontalAlignment="Center"
+                          VerticalAlignment="Center"
+                          Data="M0,0 L4,4 8,0 Z"
+                          Margin="0,0,12,0">
+                        <Path.RenderTransform>
+                            <RotateTransform Angle="0" />
+                        </Path.RenderTransform>
+                    </Path>
+                </ToggleButton>
+
+                <!-- Отображение выбранного элемента -->
+                <ContentPresenter x:Name="contentPresenter"
+                                  Content="{TemplateBinding SelectionBoxItem}"
+                                  ContentTemplate="{TemplateBinding SelectionBoxItemTemplate}"
+                                  ContentTemplateSelector="{TemplateBinding ItemTemplateSelector}"
+                                  Margin="{TemplateBinding Padding}"
+                                  HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                  VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+                                  SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" />
+
+                <!-- Всплывающее окно со списком элементов -->
+                <Popup x:Name="popup"
+                       AllowsTransparency="True"
+                       Placement="Bottom"
+                       Focusable="False"
+                       IsOpen="{Binding IsDropDownOpen, RelativeSource={RelativeSource TemplatedParent}}"
+                       PopupAnimation="Slide">
+                    <Border x:Name="dropDownBorder"
+                            Background="White"
+                            BorderBrush="#E0E0E0"
+                            BorderThickness="1"
+                            CornerRadius="6"
+                            MaxHeight="{TemplateBinding MaxDropDownHeight}">
+                        <ScrollViewer x:Name="DropDownScrollViewer">
+                            <ItemsPresenter x:Name="ItemsPresenter"
+                                            KeyboardNavigation.DirectionalNavigation="Contained"
+                                            SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" />
+                        </ScrollViewer>
+                    </Border>
+                </Popup>
+            </Grid>
+            <ControlTemplate.Triggers>
+                <!-- Анимация стрелки при открытии/закрытии списка -->
+                <Trigger Property="IsDropDownOpen"
+                         Value="True">
+                    <Trigger.EnterActions>
+                        <BeginStoryboard>
+                            <Storyboard>
+                                <DoubleAnimation To="180"
+                                                 Duration="0:0:0.3"
+                                                 Storyboard.TargetName="arrow"
+                                                 Storyboard.TargetProperty="RenderTransform.Angle" />
+                                <ColorAnimation To="#7E57C2"
+                                                Duration="0:0:0.2"
+                                                Storyboard.TargetName="arrow"
+                                                Storyboard.TargetProperty="Fill.Color" />
+                            </Storyboard>
+                        </BeginStoryboard>
+                    </Trigger.EnterActions>
+                    <Trigger.ExitActions>
+                        <BeginStoryboard>
+                            <Storyboard>
+                                <DoubleAnimation To="0"
+                                                 Duration="0:0:0.3"
+                                                 Storyboard.TargetName="arrow"
+                                                 Storyboard.TargetProperty="RenderTransform.Angle" />
+                                <ColorAnimation To="#757575"
+                                                Duration="0:0:0.2"
+                                                Storyboard.TargetName="arrow"
+                                                Storyboard.TargetProperty="Fill.Color" />
+                            </Storyboard>
+                        </BeginStoryboard>
+                    </Trigger.ExitActions>
+                </Trigger>
+            </ControlTemplate.Triggers>
+        </ControlTemplate>
+
+        <Style x:Key="ModernComboBox"
+               TargetType="ComboBox">
+            <Setter Property="Background"
+                    Value="#FAFAFA" />
+            <Setter Property="BorderThickness"
+                    Value="1" />
+            <Setter Property="BorderBrush"
+                    Value="#E0E0E0" />
+            <Setter Property="Padding"
+                    Value="16,12" />
+            <Setter Property="FontSize"
+                    Value="14" />
+            <Setter Property="Foreground"
+                    Value="#212121" />
+            <Setter Property="Template"
+                    Value="{StaticResource RoundedComboBoxTemplate}" />
+            <Setter Property="ItemContainerStyle"
+                    Value="{StaticResource ComboBoxItemStyle}" />
+        </Style>
+
+        <!-- СТИЛЬ ДЛЯ ЧЕКБОКСОВ С АНИМАЦИЕЙ ГАЛОЧКИ -->
+        <ControlTemplate x:Key="RoundedCheckBoxTemplate"
+                         TargetType="CheckBox">
+            <Border x:Name="border"
+                    Background="{TemplateBinding Background}"
+                    BorderBrush="{TemplateBinding BorderBrush}"
+                    BorderThickness="{TemplateBinding BorderThickness}"
+                    CornerRadius="8"
+                    Padding="16,12"
+                    SnapsToDevicePixels="True">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+
+                    <!-- Контейнер для галочки -->
+                    <Border x:Name="checkBoxBorder"
+                            Width="16"
+                            Height="16"
+                            BorderBrush="#B39DDB"
+                            BorderThickness="2"
+                            CornerRadius="3"
+                            Background="Transparent"
+                            Margin="0,0,8,0">
+                        <Path x:Name="checkMark"
+                              Data="M0,5 L3,8 8,0"
+                              Stroke="#7E57C2"
+                              StrokeThickness="2"
+                              Stretch="Fill"
+                              Opacity="0" />
+                    </Border>
+
+                    <!-- Текст чекбокса -->
+                    <ContentPresenter x:Name="contentPresenter"
+                                      Grid.Column="1"
+                                      Content="{TemplateBinding Content}"
+                                      ContentTemplate="{TemplateBinding ContentTemplate}"
+                                      VerticalAlignment="Center"
+                                      Margin="4,0,0,0" />
+                </Grid>
+            </Border>
+            <ControlTemplate.Triggers>
+                <Trigger Property="IsChecked"
+                         Value="True">
+                    <!-- Анимации при установке галочки -->
+                    <Trigger.EnterActions>
+                        <BeginStoryboard>
+                            <Storyboard>
+                                <ColorAnimation To="#7E57C2"
+                                                Duration="0:0:0.3"
+                                                Storyboard.TargetName="border"
+                                                Storyboard.TargetProperty="BorderBrush.Color" />
+                                <ColorAnimation To="#EDE7F6"
+                                                Duration="0:0:0.3"
+                                                Storyboard.TargetName="border"
+                                                Storyboard.TargetProperty="Background.Color" />
+                                <DoubleAnimation To="1"
+                                                 Duration="0:0:0.2"
+                                                 Storyboard.TargetName="checkMark"
+                                                 Storyboard.TargetProperty="Opacity" />
+                            </Storyboard>
+                        </BeginStoryboard>
+                    </Trigger.EnterActions>
+                    <!-- Анимации при снятии галочки -->
+                    <Trigger.ExitActions>
+                        <BeginStoryboard>
+                            <Storyboard>
+                                <ColorAnimation To="#E0E0E0"
+                                                Duration="0:0:0.3"
+                                                Storyboard.TargetName="border"
+                                                Storyboard.TargetProperty="BorderBrush.Color" />
+                                <ColorAnimation To="White"
+                                                Duration="0:0:0.3"
+                                                Storyboard.TargetName="border"
+                                                Storyboard.TargetProperty="Background.Color" />
+                                <DoubleAnimation To="0"
+                                                 Duration="0:0:0.2"
+                                                 Storyboard.TargetName="checkMark"
+                                                 Storyboard.TargetProperty="Opacity" />
+                            </Storyboard>
+                        </BeginStoryboard>
+                    </Trigger.ExitActions>
+                </Trigger>
+
+                <!-- Анимация при наведении -->
+                <Trigger Property="IsMouseOver"
+                         Value="True">
+                    <Setter TargetName="border"
+                            Property="BorderBrush"
+                            Value="#B39DDB" />
+                    <Setter TargetName="border"
+                            Property="Background"
+                            Value="#F8F5FF" />
+                </Trigger>
+            </ControlTemplate.Triggers>
+        </ControlTemplate>
+
+        <Style x:Key="InteractiveCheckBox"
+               TargetType="CheckBox">
+            <Setter Property="Background"
+                    Value="White" />
             <Setter Property="BorderBrush"
                     Value="#E0E0E0" />
             <Setter Property="BorderThickness"
                     Value="1" />
+            <Setter Property="Foreground"
+                    Value="#212121" />
             <Setter Property="Margin"
-                    Value="8,12" />
-            <Setter Property="Padding"
-                    Value="28" />
-            <Setter Property="Effect">
-                <Setter.Value>
-                    <DropShadowEffect ShadowDepth="2"
-                                      BlurRadius="10"
-                                      Opacity="0.1" />
-                </Setter.Value>
-            </Setter>
+                    Value="0,6" />
+            <Setter Property="Cursor"
+                    Value="Hand" />
+            <Setter Property="Template"
+                    Value="{StaticResource RoundedCheckBoxTemplate}" />
         </Style>
+
+        <!-- СТИЛИ ДЛЯ ЗАГОЛОВКОВ КАРТОЧЕК -->
+        <Style x:Key="CardHeader"
+               TargetType="TextBlock">
+            <Setter Property="FontSize"
+                    Value="20" />
+            <Setter Property="FontWeight"
+                    Value="SemiBold" />
+            <Setter Property="Foreground"
+                    Value="#212121" />
+            <Setter Property="Margin"
+                    Value="0,0,0,12" />
+        </Style>
+
+        <Style x:Key="CardSubHeader"
+               TargetType="TextBlock">
+            <Setter Property="FontSize"
+                    Value="14" />
+            <Setter Property="Foreground"
+                    Value="#757575" />
+            <Setter Property="Margin"
+                    Value="0,0,0,20" />
+        </Style>
+
+        <!-- СТИЛЬ ДЛЯ ЭЛЕМЕНТОВ МАССИВА (ИСПОЛЬЗУЕТСЯ ДЛЯ ВИЗУАЛИЗАЦИИ ПРОГРЕССА) -->
+        <Style x:Key="ArrayItemStyle"
+               TargetType="Border">
+            <Setter Property="BorderBrush"
+                    Value="#E1E1E1" />
+            <Setter Property="BorderThickness"
+                    Value="2" />
+            <Setter Property="Background"
+                    Value="White" />
+            <Setter Property="Margin"
+                    Value="8,4" />
+            <Setter Property="Padding"
+                    Value="8" />
+            <Setter Property="CornerRadius"
+                    Value="8" />
+            <Setter Property="Width"
+                    Value="60" />
+            <Setter Property="Height"
+                    Value="60" />
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver"
+                         Value="True">
+                    <Setter Property="BorderBrush"
+                            Value="#7E57C2" />
+                    <Setter Property="Background"
+                            Value="#F8F5FF" />
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
+        <!-- СТИЛЬ ДЛЯ ИНДИКАТОРОВ СТАТУСА (КРУГЛЫЕ ИНДИКАТОРЫ) -->
+        <Style x:Key="StatusIndicator"
+               TargetType="Ellipse">
+            <Setter Property="Width"
+                    Value="16" />
+            <Setter Property="Height"
+                    Value="16" />
+            <Setter Property="Margin"
+                    Value="0,0,10,0" />
+        </Style>
+
+        <!-- ЭФФЕКТ ТЕНИ ДЛЯ КОМПОНЕНТОВ -->
+        <DropShadowEffect x:Key="ShadowEffect"
+                          ShadowDepth="2"
+                          BlurRadius="10"
+                          Color="#33000000"
+                          Opacity="0.3" />
     </Window.Resources>
 
+    <!-- ОСНОВНОЙ КОНТЕЙНЕР ПРИЛОЖЕНИЯ -->
     <Grid>
-        <!-- Верхняя панель -->
+        <!-- ВЕРХНИЙ КОЛОНТИТУЛ ПРИЛОЖЕНИЯ -->
         <Border Background="#7E57C2"
                 Height="72"
-                VerticalAlignment="Top">
+                VerticalAlignment="Top"
+                MouseLeftButtonDown="TopBar_MouseLeftButtonDown">
             <Grid>
-                <TextBlock Text="FitCheck"
-                           Foreground="White"
-                           FontSize="24"
-                           FontWeight="Bold"
-                           Margin="28,0" />
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+
+                <!-- Название приложения -->
+                <StackPanel Orientation="Horizontal"
+                            VerticalAlignment="Center"
+                            Margin="28,0">
+                    <TextBlock Text="FitCheck"
+                               Foreground="White"
+                               FontSize="24"
+                               FontWeight="Bold"
+                               VerticalAlignment="Center" />
+                </StackPanel>
+
+                <!-- Подзаголовок приложения -->
+                <TextBlock Text="Умный фитнес-трекер с WP-анализом"
+                           Foreground="#E1D5F5"
+                           FontSize="14"
+                           VerticalAlignment="Center"
+                           Grid.Column="1"
+                           Margin="16,0,28,0" />
+
+                <!-- КНОПКИ УПРАВЛЕНИЯ ОКНОМ -->
+                <StackPanel Grid.Column="2"
+                            Orientation="Horizontal"
+                            VerticalAlignment="Center"
+                            Margin="0,0,12,0">
+
+                    <!-- Кнопка сворачивания -->
+                    <Button x:Name="btnMinimize"
+                            Content="─"
+                            Width="40"
+                            Height="30"
+                            Background="Transparent"
+                            BorderThickness="0"
+                            Foreground="White"
+                            FontSize="14"
+                            FontWeight="SemiBold"
+                            Cursor="Hand"
+                            Margin="2,0"
+                            Click="btnMinimize_Click">
+                        <Button.Style>
+                            <Style TargetType="Button">
+                                <Setter Property="Background"
+                                        Value="Transparent" />
+                                <Setter Property="BorderThickness"
+                                        Value="0" />
+                                <Setter Property="Foreground"
+                                        Value="White" />
+                                <Setter Property="Template">
+                                    <Setter.Value>
+                                        <ControlTemplate TargetType="Button">
+                                            <Border x:Name="border"
+                                                    Background="{TemplateBinding Background}"
+                                                    CornerRadius="4"
+                                                    SnapsToDevicePixels="True">
+                                                <ContentPresenter x:Name="contentPresenter"
+                                                                  Content="{TemplateBinding Content}"
+                                                                  HorizontalAlignment="Center"
+                                                                  VerticalAlignment="Center"
+                                                                  Margin="0" />
+                                            </Border>
+                                            <ControlTemplate.Triggers>
+                                                <Trigger Property="IsMouseOver"
+                                                         Value="True">
+                                                    <Setter TargetName="border"
+                                                            Property="Background"
+                                                            Value="#6A45B0" />
+                                                </Trigger>
+                                                <Trigger Property="IsPressed"
+                                                         Value="True">
+                                                    <Setter TargetName="border"
+                                                            Property="Background"
+                                                            Value="#5E35B1" />
+                                                </Trigger>
+                                            </ControlTemplate.Triggers>
+                                        </ControlTemplate>
+                                    </Setter.Value>
+                                </Setter>
+                            </Style>
+                        </Button.Style>
+                    </Button>
+
+                    <!-- Кнопка масштабирования -->
+                    <Button x:Name="btnMaximize"
+                            Content="□"
+                            Width="40"
+                            Height="30"
+                            Background="Transparent"
+                            BorderThickness="0"
+                            Foreground="White"
+                            FontSize="12"
+                            FontWeight="SemiBold"
+                            Cursor="Hand"
+                            Margin="2,0"
+                            Click="btnMaximize_Click">
+                        <Button.Style>
+                            <Style TargetType="Button">
+                                <Setter Property="Background"
+                                        Value="Transparent" />
+                                <Setter Property="BorderThickness"
+                                        Value="0" />
+                                <Setter Property="Foreground"
+                                        Value="White" />
+                                <Setter Property="Template">
+                                    <Setter.Value>
+                                        <ControlTemplate TargetType="Button">
+                                            <Border x:Name="border"
+                                                    Background="{TemplateBinding Background}"
+                                                    CornerRadius="4"
+                                                    SnapsToDevicePixels="True">
+                                                <ContentPresenter x:Name="contentPresenter"
+                                                                  Content="{TemplateBinding Content}"
+                                                                  HorizontalAlignment="Center"
+                                                                  VerticalAlignment="Center"
+                                                                  Margin="0" />
+                                            </Border>
+                                            <ControlTemplate.Triggers>
+                                                <Trigger Property="IsMouseOver"
+                                                         Value="True">
+                                                    <Setter TargetName="border"
+                                                            Property="Background"
+                                                            Value="#6A45B0" />
+                                                </Trigger>
+                                                <Trigger Property="IsPressed"
+                                                         Value="True">
+                                                    <Setter TargetName="border"
+                                                            Property="Background"
+                                                            Value="#5E35B1" />
+                                                </Trigger>
+                                            </ControlTemplate.Triggers>
+                                        </ControlTemplate>
+                                    </Setter.Value>
+                                </Setter>
+                            </Style>
+                        </Button.Style>
+                    </Button>
+
+                    <!-- Кнопка закрытия -->
+                    <Button x:Name="btnClose"
+                            Content="×"
+                            Width="40"
+                            Height="30"
+                            Background="Transparent"
+                            BorderThickness="0"
+                            Foreground="White"
+                            FontSize="16"
+                            FontWeight="SemiBold"
+                            Cursor="Hand"
+                            Margin="2,0"
+                            Click="btnClose_Click">
+                        <Button.Style>
+                            <Style TargetType="Button">
+                                <Setter Property="Background"
+                                        Value="Transparent" />
+                                <Setter Property="BorderThickness"
+                                        Value="0" />
+                                <Setter Property="Foreground"
+                                        Value="White" />
+                                <Setter Property="Template">
+                                    <Setter.Value>
+                                        <ControlTemplate TargetType="Button">
+                                            <Border x:Name="border"
+                                                    Background="{TemplateBinding Background}"
+                                                    CornerRadius="4"
+                                                    SnapsToDevicePixels="True">
+                                                <ContentPresenter x:Name="contentPresenter"
+                                                                  Content="{TemplateBinding Content}"
+                                                                  HorizontalAlignment="Center"
+                                                                  VerticalAlignment="Center"
+                                                                  Margin="0" />
+                                            </Border>
+                                            <ControlTemplate.Triggers>
+                                                <Trigger Property="IsMouseOver"
+                                                         Value="True">
+                                                    <Setter TargetName="border"
+                                                            Property="Background"
+                                                            Value="#E53935" />
+                                                    <Setter TargetName="contentPresenter"
+                                                            Property="TextElement.Foreground"
+                                                            Value="White" />
+                                                </Trigger>
+                                                <Trigger Property="IsPressed"
+                                                         Value="True">
+                                                    <Setter TargetName="border"
+                                                            Property="Background"
+                                                            Value="#C62828" />
+                                                </Trigger>
+                                            </ControlTemplate.Triggers>
+                                        </ControlTemplate>
+                                    </Setter.Value>
+                                </Setter>
+                            </Style>
+                        </Button.Style>
+                    </Button>
+                </StackPanel>
             </Grid>
         </Border>
 
-        <!-- Основное содержимое будет добавлено в MainWindow.xaml.cs -->
+        <!-- ОСНОВНАЯ ОБЛАСТЬ СОДЕРЖИМОГО -->
         <Grid Margin="0,72,0,0"
-              x:Name="MainContentGrid" />
+              x:Name="MainContentGrid">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition x:Name="NavColumn"
+                                  Width="300" />
+                <!-- Панель навигации -->
+                <ColumnDefinition Width="Auto"
+                                  x:Name="ExpandButtonColumn" />
+                <!-- Кнопка разворачивания -->
+                <ColumnDefinition Width="*" />
+                <!-- Основное содержимое -->
+            </Grid.ColumnDefinitions>
+
+            <!-- ПАНЕЛЬ НАВИГАЦИИ (БОКОВАЯ ПАНЕЛЬ) -->
+            <Border Background="White"
+                    Grid.Column="0"
+                    x:Name="NavPanel">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <!-- Заголовок навигации -->
+                        <RowDefinition Height="*" />
+                        <!-- Основные кнопки навигации -->
+                        <RowDefinition Height="Auto" />
+                        <!-- Справка -->
+                        <RowDefinition Height="Auto" />
+                        <!-- Кнопка сворачивания -->
+                    </Grid.RowDefinitions>
+
+                    <!-- Заголовок раздела навигации -->
+                    <StackPanel Grid.Row="0"
+                                Margin="12,12,12,0">
+                        <TextBlock Text="НАВИГАЦИЯ"
+                                   Foreground="#757575"
+                                   FontSize="12"
+                                   FontWeight="Bold"
+                                   Margin="16,8,16,8" />
+                    </StackPanel>
+
+                    <!-- Основные кнопки навигации между разделами -->
+                    <ScrollViewer Grid.Row="1"
+                                  VerticalScrollBarVisibility="Auto">
+                        <StackPanel Margin="8,0,8,0">
+                            <RadioButton x:Name="rbProfile"
+                                         Content="Мой профиль"
+                                         Style="{StaticResource ModernTabButton}"
+                                         GroupName="Navigation"
+                                         IsChecked="True" />
+                            <RadioButton x:Name="rbDiet"
+                                         Content="Дневник питания"
+                                         Style="{StaticResource ModernTabButton}"
+                                         GroupName="Navigation" />
+                            <RadioButton x:Name="rbGoals"
+                                         Content="Планирование целей"
+                                         Style="{StaticResource ModernTabButton}"
+                                         GroupName="Navigation" />
+                        </StackPanel>
+                    </ScrollViewer>
+
+                    <!-- РАЗДЕЛ СПРАВКИ В НАВИГАЦИИ -->
+                    <Border Grid.Row="2"
+                            Background="#F8F9FA"
+                            BorderThickness="0,1,0,0"
+                            BorderBrush="#E0E0E0">
+                        <StackPanel>
+                            <Button x:Name="NavHelpButton"
+                                    Content="Справка"
+                                    Style="{StaticResource HelpButtonStyle}"
+                                    Click="NavHelpButton_Click" />
+
+                            <!-- Скрываемая панель справки -->
+                            <Border x:Name="NavHelpPanel"
+                                    Background="#F0F2F5"
+                                    Height="0"
+                                    Visibility="Collapsed">
+                                <ScrollViewer VerticalScrollBarVisibility="Auto">
+                                    <StackPanel Margin="16,12">
+                                        <TextBlock x:Name="NavHelpTitle"
+                                                   FontWeight="Bold"
+                                                   FontSize="14"
+                                                   Foreground="#212121"
+                                                   Margin="0,0,0,8" />
+                                        <TextBlock x:Name="NavHelpContent"
+                                                   FontSize="12"
+                                                   Foreground="#757575"
+                                                   TextWrapping="Wrap"
+                                                   Margin="0,0,0,8" />
+                                    </StackPanel>
+                                </ScrollViewer>
+                            </Border>
+                        </StackPanel>
+                    </Border>
+
+                    <!-- КНОПКА СВОРАЧИВАНИЯ ПАНЕЛИ НАВИГАЦИИ -->
+                    <Border Grid.Row="3"
+                            Background="White"
+                            BorderThickness="0,1,0,0"
+                            BorderBrush="#E0E0E0"
+                            Padding="8">
+                        <Button x:Name="NavCollapseButton"
+                                Content="◀"
+                                Style="{StaticResource CollapseButtonStyle}"
+                                Click="NavCollapseButton_Click"
+                                HorizontalAlignment="Right" />
+                    </Border>
+                </Grid>
+            </Border>
+
+            <!-- КНОПКА РАЗВОРАЧИВАНИЯ ПАНЕЛИ НАВИГАЦИИ (ПОКАЗЫВАЕТСЯ КОГДА ПАНЕЛЬ СКРЫТА) -->
+            <Button x:Name="NavExpandButton"
+                    Grid.Column="1"
+                    Content="▶"
+                    Style="{StaticResource CollapseButtonStyle}"
+                    VerticalAlignment="Top"
+                    Margin="4,8,4,0"
+                    Click="NavExpandButton_Click"
+                    Visibility="Collapsed"
+                    Width="24"
+                    Height="24" />
+
+            <!-- ОСНОВНАЯ ОБЛАСТЬ СОДЕРЖИМОГО С ВКЛАДКАМИ -->
+            <ScrollViewer Grid.Column="2"
+                          VerticalScrollBarVisibility="Auto"
+                          Background="#F5F5F5">
+                <Grid Margin="20">
+
+                    <!-- ВКЛАДКА "МОЙ ПРОФИЛЬ" - ОСНОВНАЯ ИНФОРМАЦИЯ ПОЛЬЗОВАТЕЛЯ -->
+                    <Grid x:Name="panelProfile"
+                          Visibility="Visible">
+                        <StackPanel>
+                            <!-- КАРТОЧКА: Основная информация пользователя -->
+                            <Border Style="{StaticResource InteractiveCard}"
+                                    Padding="28">
+                                <StackPanel>
+                                    <TextBlock Text="Мой профиль"
+                                               Style="{StaticResource CardHeader}" />
+                                    <TextBlock Text="Основная информация для расчетов калорий и БЖУ"
+                                               Style="{StaticResource CardSubHeader}" />
+
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*" />
+                                            <ColumnDefinition Width="24" />
+                                            <ColumnDefinition Width="*" />
+                                        </Grid.ColumnDefinitions>
+
+                                        <!-- Левая колонка: возраст и рост -->
+                                        <StackPanel Grid.Column="0">
+                                            <TextBlock Text="Возраст (лет)"
+                                                       FontWeight="SemiBold"
+                                                       Margin="0,8,0,6"
+                                                       Foreground="#212121" />
+                                            <TextBox x:Name="txtAge"
+                                                     Style="{StaticResource ModernTextBox}"
+                                                     TextChanged="InputChanged" />
+
+                                            <TextBlock Text="Рост (см)"
+                                                       FontWeight="SemiBold"
+                                                       Margin="0,20,0,6"
+                                                       Foreground="#212121" />
+                                            <TextBox x:Name="txtHeight"
+                                                     Style="{StaticResource ModernTextBox}"
+                                                     TextChanged="InputChanged" />
+                                        </StackPanel>
+
+                                        <!-- Правая колонка: вес и пол -->
+                                        <StackPanel Grid.Column="2">
+                                            <TextBlock Text="Вес (кг)"
+                                                       FontWeight="SemiBold"
+                                                       Margin="0,8,0,6"
+                                                       Foreground="#212121" />
+                                            <TextBox x:Name="txtWeight"
+                                                     Style="{StaticResource ModernTextBox}"
+                                                     TextChanged="InputChanged" />
+
+                                            <TextBlock Text="Пол"
+                                                       FontWeight="SemiBold"
+                                                       Margin="0,20,0,10"
+                                                       Foreground="#212121" />
+                                            <StackPanel Orientation="Horizontal">
+                                                <RadioButton x:Name="rbMale"
+                                                             Content="Мужчина"
+                                                             Margin="0,0,20,0"
+                                                             Style="{StaticResource ModernTabButton}"
+                                                             Checked="InputChanged" />
+                                                <RadioButton x:Name="rbFemale"
+                                                             Content="Женщина"
+                                                             Style="{StaticResource ModernTabButton}"
+                                                             Checked="InputChanged" />
+                                            </StackPanel>
+                                        </StackPanel>
+                                    </Grid>
+
+                                    <!-- Кнопка расчета нормы калорий -->
+                                    <Button x:Name="btnCalc"
+                                            Content="Рассчитать норму"
+                                            Style="{StaticResource PrimaryButton}"
+                                            Margin="0,28,0,0"
+                                            Click="btnCalc_Click" />
+                                </StackPanel>
+                            </Border>
+
+                            <!-- КАРТОЧКА: Результаты расчета калорий и БЖУ -->
+                            <Border x:Name="resultCard"
+                                    Style="{StaticResource InteractiveCard}"
+                                    Padding="28"
+                                    Margin="0,16,0,0">
+                                <StackPanel>
+                                    <TextBlock Text="Результаты расчета"
+                                               Style="{StaticResource CardHeader}" />
+
+                                    <Grid Margin="0,12,0,0">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*" />
+                                            <ColumnDefinition Width="1"
+                                                              MaxWidth="1" />
+                                            <ColumnDefinition Width="*" />
+                                        </Grid.ColumnDefinitions>
+
+                                        <!-- Левая часть: общие результаты -->
+                                        <StackPanel Grid.Column="0">
+                                            <TextBlock x:Name="txtResult"
+                                                       Text="Введите данные и нажмите 'Рассчитать норму'"
+                                                       TextWrapping="Wrap"
+                                                       Foreground="#757575"
+                                                       FontSize="14" />
+                                        </StackPanel>
+
+                                        <!-- Вертикальный разделитель -->
+                                        <Rectangle Grid.Column="1"
+                                                   Fill="#EEEEEE"
+                                                   Margin="20,0"
+                                                   HorizontalAlignment="Center"
+                                                   Width="1" />
+
+                                        <!-- Правая часть: WP-анализ -->
+                                        <StackPanel Grid.Column="2">
+                                            <TextBlock Text="WP-анализ:"
+                                                       FontWeight="SemiBold"
+                                                       Margin="0,0,0,10"
+                                                       Foreground="#212121" />
+                                            <TextBlock x:Name="txtCaloriesAnalysis"
+                                                       Text="Анализ будет показан здесь"
+                                                       TextWrapping="Wrap"
+                                                       Foreground="#757575"
+                                                       FontSize="12" />
+                                        </StackPanel>
+                                    </Grid>
+
+                                    <!-- Индикаторы предусловий/постусловий для WP-анализа -->
+                                    <StackPanel Orientation="Horizontal"
+                                                Margin="0,20,0,0"
+                                                HorizontalAlignment="Center">
+                                        <Border Style="{StaticResource ClickablePanel}"
+                                                Padding="12,8"
+                                                Margin="4">
+                                            <StackPanel Orientation="Horizontal">
+                                                <Ellipse x:Name="preIndicator"
+                                                         Style="{StaticResource StatusIndicator}"
+                                                         Fill="#FF5252" />
+                                                <TextBlock Text="Предусловие"
+                                                           VerticalAlignment="Center"
+                                                           FontSize="12"
+                                                           Foreground="#757575" />
+                                            </StackPanel>
+                                        </Border>
+                                        <Border Style="{StaticResource ClickablePanel}"
+                                                Padding="12,8"
+                                                Margin="4">
+                                            <StackPanel Orientation="Horizontal">
+                                                <Ellipse x:Name="postIndicator"
+                                                         Style="{StaticResource StatusIndicator}"
+                                                         Fill="#FF5252" />
+                                                <TextBlock Text="Постусловие"
+                                                           VerticalAlignment="Center"
+                                                           FontSize="12"
+                                                           Foreground="#757575" />
+                                            </StackPanel>
+                                        </Border>
+                                    </StackPanel>
+                                </StackPanel>
+                            </Border>
+
+                            <!-- КАРТОЧКА: Проверка фитнес-программы -->
+                            <Border Style="{StaticResource InteractiveCard}"
+                                    Padding="28"
+                                    Margin="0,16,0,0">
+                                <StackPanel>
+                                    <TextBlock Text="Проверка фитнес-программы"
+                                               Style="{StaticResource CardHeader}" />
+                                    <TextBlock Text="Отметьте элементы вашей программы для оценки эффективности"
+                                               Style="{StaticResource CardSubHeader}" />
+
+                                    <!-- Чекбоксы элементов программы -->
+                                    <StackPanel Margin="0,12">
+                                        <CheckBox x:Name="cbDiet"
+                                                  Content="Соблюдение диеты"
+                                                  Style="{StaticResource InteractiveCheckBox}"
+                                                  Checked="UpdateSuccessResult"
+                                                  Unchecked="UpdateSuccessResult" />
+                                        <CheckBox x:Name="cbTraining"
+                                                  Content="Регулярные тренировки"
+                                                  Style="{StaticResource InteractiveCheckBox}"
+                                                  Checked="UpdateSuccessResult"
+                                                  Unchecked="UpdateSuccessResult" />
+                                        <CheckBox x:Name="cbSleep"
+                                                  Content="Качественный сон"
+                                                  Style="{StaticResource InteractiveCheckBox}"
+                                                  Checked="UpdateSuccessResult"
+                                                  Unchecked="UpdateSuccessResult" />
+                                    </StackPanel>
+
+                                    <!-- Отображение результата оценки программы -->
+                                    <Border Style="{StaticResource ClickablePanel}"
+                                            Background="#F8F9FA"
+                                            Padding="20,14"
+                                            Margin="0,20,0,0">
+                                        <StackPanel>
+                                            <TextBlock Text="Результат программы:"
+                                                       FontWeight="SemiBold"
+                                                       Margin="0,0,0,6" />
+                                            <TextBlock x:Name="txtSuccessResult"
+                                                       Text="Неудача"
+                                                       FontSize="16"
+                                                       FontWeight="Bold"
+                                                       Foreground="#FF5252" />
+                                        </StackPanel>
+                                    </Border>
+                                </StackPanel>
+                            </Border>
+                        </StackPanel>
+                    </Grid>
+
+                    <!-- ВКЛАДКА "ДНЕВНИК ПИТАНИЯ" - УЧЕТ ПОТРЕБЛЯЕМЫХ ПРОДУКТОВ -->
+                    <Grid x:Name="panelDiet"
+                          Visibility="Collapsed">
+                        <StackPanel>
+                            <!-- КАРТОЧКА: Добавление продуктов в дневник -->
+                            <Border Style="{StaticResource InteractiveCard}"
+                                    Padding="28">
+                                <StackPanel>
+                                    <TextBlock Text="Добавление продукта"
+                                               Style="{StaticResource CardHeader}" />
+                                    <TextBlock Text="Выберите продукт и укажите вес порции"
+                                               Style="{StaticResource CardSubHeader}" />
+
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*" />
+                                            <ColumnDefinition Width="20" />
+                                            <ColumnDefinition Width="200" />
+                                        </Grid.ColumnDefinitions>
+
+                                        <!-- Выбор продукта через выпадающий список -->
+                                        <StackPanel Grid.Column="0">
+                                            <TextBlock Text="Продукт"
+                                                       FontWeight="SemiBold"
+                                                       Margin="0,8,0,4"
+                                                       Foreground="#212121" />
+
+                                            <Button x:Name="btnSelectProduct"
+                                                    Content="Выберите продукт..."
+                                                    Style="{StaticResource SecondaryButton}"
+                                                    HorizontalAlignment="Stretch"
+                                                    Click="btnSelectProduct_Click" />
+
+                                            <!-- Всплывающее окно со списком продуктов -->
+                                            <Popup x:Name="productPopup"
+                                                   PlacementTarget="{Binding ElementName=btnSelectProduct}"
+                                                   Placement="Bottom"
+                                                   StaysOpen="False"
+                                                   PopupAnimation="Slide"
+                                                   AllowsTransparency="True">
+                                                <Border Background="White"
+                                                        BorderBrush="#E0E0E0"
+                                                        BorderThickness="1"
+                                                        CornerRadius="6"
+                                                        MaxHeight="300"
+                                                        Width="{Binding ActualWidth, ElementName=btnSelectProduct}">
+                                                    <Grid>
+                                                        <ListBox x:Name="productListBox"
+                                                                 Background="Transparent"
+                                                                 BorderThickness="0"
+                                                                 SelectionMode="Single"
+                                                                 ItemContainerStyle="{StaticResource ListBoxItemStyle}"
+                                                                 SelectionChanged="ProductListBox_SelectionChanged">
+                                                            <ListBox.ItemTemplate>
+                                                                <DataTemplate>
+                                                                    <TextBlock Text="{Binding}"
+                                                                               Padding="12,8"
+                                                                               FontSize="14"
+                                                                               Foreground="#212121" />
+                                                                </DataTemplate>
+                                                            </ListBox.ItemTemplate>
+                                                        </ListBox>
+                                                    </Grid>
+                                                </Border>
+                                            </Popup>
+                                        </StackPanel>
+
+                                        <!-- Ввод веса продукта -->
+                                        <StackPanel Grid.Column="2">
+                                            <TextBlock Text="Вес (грамм)"
+                                                       FontWeight="SemiBold"
+                                                       Margin="0,8,0,4"
+                                                       Foreground="#212121" />
+                                            <TextBox x:Name="txtGrams"
+                                                     Style="{StaticResource ModernTextBox}"
+                                                     TextChanged="txtGrams_TextChanged" />
+                                        </StackPanel>
+                                    </Grid>
+
+                                    <!-- Кнопка добавления продукта -->
+                                    <Button x:Name="btnAddFood"
+                                            Content="Добавить продукт"
+                                            Style="{StaticResource PrimaryButton}"
+                                            Margin="0,24,0,0"
+                                            Click="btnAddFood_Click" />
+                                </StackPanel>
+                            </Border>
+
+                            <!-- КАРТОЧКА: История питания за день -->
+                            <Border Style="{StaticResource InteractiveCard}"
+                                    Padding="28"
+                                    Margin="0,16,0,0">
+                                <StackPanel>
+                                    <TextBlock Text="История питания"
+                                               Style="{StaticResource CardHeader}" />
+                                    <TextBlock Text="Список добавленных продуктов за сегодня"
+                                               Style="{StaticResource CardSubHeader}" />
+
+                                    <!-- Список добавленных продуктов -->
+                                    <Border Style="{StaticResource ClickablePanel}"
+                                            Height="150"
+                                            Margin="0,8,0,16">
+                                        <ListBox x:Name="listFoodHistory"
+                                                 Background="Transparent"
+                                                 BorderThickness="0" />
+                                    </Border>
+
+                                    <!-- Итоги по калориям и БЖУ -->
+                                    <Border Style="{StaticResource ClickablePanel}"
+                                            Background="#F8F9FA"
+                                            Padding="16">
+                                        <TextBlock x:Name="txtTotals"
+                                                   Text="Добавьте продукты для отображения итогов"
+                                                   FontWeight="SemiBold"
+                                                   Foreground="#757575" />
+                                    </Border>
+                                </StackPanel>
+                            </Border>
+
+                            <!-- КАРТОЧКА: WP-анализ рациона питания -->
+                            <Border Style="{StaticResource InteractiveCard}"
+                                    Padding="28"
+                                    Margin="0,16,0,0">
+                                <StackPanel>
+                                    <TextBlock Text="WP-анализ дневного плана"
+                                               Style="{StaticResource CardHeader}" />
+                                    <TextBlock x:Name="txtDietAnalysis"
+                                               Text="Добавьте продукты и выполните WP-анализ"
+                                               TextWrapping="Wrap"
+                                               Foreground="#757575"
+                                               FontSize="14"
+                                               Margin="0,8,0,0" />
+
+                                    <!-- Индикаторы предусловий/постусловий для анализа рациона -->
+                                    <StackPanel Orientation="Horizontal"
+                                                Margin="0,16,0,0"
+                                                HorizontalAlignment="Center">
+                                        <Border Style="{StaticResource ClickablePanel}"
+                                                Padding="12,8"
+                                                Margin="4">
+                                            <StackPanel Orientation="Horizontal">
+                                                <Ellipse x:Name="dietPreIndicator"
+                                                         Style="{StaticResource StatusIndicator}"
+                                                         Fill="#FF5252" />
+                                                <TextBlock Text="Предусловие"
+                                                           VerticalAlignment="Center"
+                                                           FontSize="12"
+                                                           Foreground="#757575" />
+                                            </StackPanel>
+                                        </Border>
+                                        <Border Style="{StaticResource ClickablePanel}"
+                                                Padding="12,8"
+                                                Margin="4">
+                                            <StackPanel Orientation="Horizontal">
+                                                <Ellipse x:Name="dietPostIndicator"
+                                                         Style="{StaticResource StatusIndicator}"
+                                                         Fill="#FF5252" />
+                                                <TextBlock Text="Постусловие"
+                                                           VerticalAlignment="Center"
+                                                           FontSize="12"
+                                                           Foreground="#757575" />
+                                            </StackPanel>
+                                        </Border>
+                                    </StackPanel>
+                                </StackPanel>
+                            </Border>
+                        </StackPanel>
+                    </Grid>
+
+                    <!-- ВКЛАДКА "ПЛАНИРОВАНИЕ ЦЕЛЕЙ" - ПОСТАНОВКА И ОТСЛЕЖИВАНИЕ ФИТНЕС-ЦЕЛЕЙ -->
+                    <Grid x:Name="panelGoal"
+                          Visibility="Collapsed">
+                        <StackPanel>
+                            <!-- КАРТОЧКА: Постановка целей по весу и срокам -->
+                            <Border Style="{StaticResource InteractiveCard}"
+                                    Padding="28">
+                                <StackPanel>
+                                    <TextBlock Text="Постановка целей"
+                                               Style="{StaticResource CardHeader}" />
+                                    <TextBlock Text="Установите целевые параметры и сроки"
+                                               Style="{StaticResource CardSubHeader}" />
+
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*" />
+                                            <ColumnDefinition Width="20" />
+                                            <ColumnDefinition Width="*" />
+                                        </Grid.ColumnDefinitions>
+
+                                        <!-- Ввод целевого веса -->
+                                        <StackPanel Grid.Column="0">
+                                            <TextBlock Text="Целевой вес (кг)"
+                                                       FontWeight="SemiBold"
+                                                       Margin="0,8,0,4"
+                                                       Foreground="#212121" />
+                                            <TextBox x:Name="txtTargetWeight"
+                                                     Style="{StaticResource ModernTextBox}"
+                                                     Text="65"
+                                                     TextChanged="GoalInputChanged" />
+                                        </StackPanel>
+
+                                        <!-- Ввод срока достижения цели -->
+                                        <StackPanel Grid.Column="2">
+                                            <TextBlock Text="Срок (месяцев)"
+                                                       FontWeight="SemiBold"
+                                                       Margin="0,8,0,4"
+                                                       Foreground="#212121" />
+                                            <TextBox x:Name="txtTimelineMonths"
+                                                     Style="{StaticResource ModernTextBox}"
+                                                     Text="3"
+                                                     TextChanged="GoalInputChanged" />
+                                        </StackPanel>
+                                    </Grid>
+
+                                    <!-- Выбор уровня активности -->
+                                    <StackPanel Margin="0,16,0,0">
+                                        <TextBlock Text="Уровень активности"
+                                                   FontWeight="SemiBold"
+                                                   Margin="0,8,0,4"
+                                                   Foreground="#212121" />
+
+                                        <Grid>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="*" />
+                                                <ColumnDefinition Width="Auto" />
+                                            </Grid.ColumnDefinitions>
+
+                                            <Button x:Name="btnSelectActivity"
+                                                    Grid.Column="0"
+                                                    Content="Выберите активность..."
+                                                    Style="{StaticResource SecondaryButton}"
+                                                    HorizontalAlignment="Stretch"
+                                                    Click="btnSelectActivity_Click" />
+
+                                            <!-- Всплывающее окно выбора уровня активности -->
+                                            <Popup x:Name="activityPopup"
+                                                   Grid.Column="1"
+                                                   PlacementTarget="{Binding ElementName=btnSelectActivity}"
+                                                   Placement="Bottom"
+                                                   StaysOpen="False"
+                                                   PopupAnimation="Slide"
+                                                   AllowsTransparency="True">
+                                                <Border Background="White"
+                                                        BorderBrush="#E0E0E0"
+                                                        BorderThickness="1"
+                                                        CornerRadius="6"
+                                                        MaxHeight="300"
+                                                        Width="{Binding ActualWidth, ElementName=btnSelectActivity}"
+                                                        Effect="{StaticResource ShadowEffect}">
+                                                    <Grid>
+                                                        <ListBox x:Name="activityListBox"
+                                                                 Background="Transparent"
+                                                                 BorderThickness="0"
+                                                                 SelectionMode="Single"
+                                                                 ItemContainerStyle="{StaticResource ListBoxItemStyle}"
+                                                                 SelectionChanged="ActivityListBox_SelectionChanged">
+                                                            <ListBox.ItemTemplate>
+                                                                <DataTemplate>
+                                                                    <TextBlock Text="{Binding}"
+                                                                               Padding="12,8"
+                                                                               FontSize="14"
+                                                                               Foreground="#212121" />
+                                                                </DataTemplate>
+                                                            </ListBox.ItemTemplate>
+                                                        </ListBox>
+                                                    </Grid>
+                                                </Border>
+                                            </Popup>
+                                        </Grid>
+                                    </StackPanel>
+
+                                    <!-- Кнопка расчета прогресса -->
+                                    <Button x:Name="btnSetGoal"
+                                            Content="Рассчитать прогресс"
+                                            Style="{StaticResource PrimaryButton}"
+                                            Margin="0,24,0,0"
+                                            Click="btnSetGoal_Click" />
+                                </StackPanel>
+                            </Border>
+
+                            <!-- КАРТОЧКА: Результаты планирования и анализ достижимости -->
+                            <Border Style="{StaticResource InteractiveCard}"
+                                    Padding="28"
+                                    Margin="0,16,0,0">
+                                <StackPanel>
+                                    <TextBlock Text="Результаты планирования"
+                                               Style="{StaticResource CardHeader}" />
+                                    <TextBlock x:Name="txtGoalResult"
+                                               Text="Установите цели для расчета"
+                                               TextWrapping="Wrap"
+                                               Foreground="#757575"
+                                               FontSize="14"
+                                               Margin="0,8,0,16" />
+
+                                    <TextBlock Text="Анализ достижимости цели:"
+                                               FontWeight="SemiBold"
+                                               Margin="0,8,0,4"
+                                               Foreground="#212121" />
+                                    <TextBlock x:Name="txtGoalAnalysis"
+                                               Text="Выполните анализ для проверки достижимости цели"
+                                               TextWrapping="Wrap"
+                                               Foreground="#757575"
+                                               FontSize="12" />
+
+                                    <!-- Индикаторы предусловий/постусловий для анализа целей -->
+                                    <StackPanel Orientation="Horizontal"
+                                                Margin="0,16,0,0"
+                                                HorizontalAlignment="Center">
+                                        <Border Style="{StaticResource ClickablePanel}"
+                                                Padding="12,8"
+                                                Margin="4">
+                                            <StackPanel Orientation="Horizontal">
+                                                <Ellipse x:Name="goalPreIndicator"
+                                                         Style="{StaticResource StatusIndicator}"
+                                                         Fill="#FF5252" />
+                                                <TextBlock Text="Предусловие"
+                                                           VerticalAlignment="Center"
+                                                           FontSize="12"
+                                                           Foreground="#757575" />
+                                            </StackPanel>
+                                        </Border>
+                                        <Border Style="{StaticResource ClickablePanel}"
+                                                Padding="12,8"
+                                                Margin="4">
+                                            <StackPanel Orientation="Horizontal">
+                                                <Ellipse x:Name="goalPostIndicator"
+                                                         Style="{StaticResource StatusIndicator}"
+                                                         Fill="#FF5252" />
+                                                <TextBlock Text="Постусловие"
+                                                           VerticalAlignment="Center"
+                                                           FontSize="12"
+                                                           Foreground="#757575" />
+                                            </StackPanel>
+                                        </Border>
+                                    </StackPanel>
+                                </StackPanel>
+                            </Border>
+
+                            <!-- КАРТОЧКА: Визуализация прогресса по неделям -->
+                            <Border Style="{StaticResource InteractiveCard}"
+                                    Padding="28"
+                                    Margin="0,16,0,0">
+                                <StackPanel>
+                                    <TextBlock Text="Визуализация прогресса по неделям"
+                                               Style="{StaticResource CardHeader}" />
+                                    <TextBlock Text="График изменения веса и поиск максимального прогресса"
+                                               Style="{StaticResource CardSubHeader}" />
+
+                                    <TextBlock Text="Прогресс по неделям:"
+                                               FontWeight="SemiBold"
+                                               Margin="0,8,0,4" />
+
+                                    <!-- Контейнер для визуализации массива прогресса по неделям -->
+                                    <Border Style="{StaticResource ClickablePanel}"
+                                            Margin="0,8"
+                                            Padding="16"
+                                            Background="#F8F9FA"
+                                            Height="140">
+                                        <ScrollViewer VerticalScrollBarVisibility="Disabled"
+                                                      HorizontalScrollBarVisibility="Disabled"
+                                                      VerticalAlignment="Center">
+                                            <StackPanel x:Name="tab3ArrayPanel"
+                                                        HorizontalAlignment="Center"
+                                                        VerticalAlignment="Center" />
+                                        </ScrollViewer>
+                                    </Border>
+
+                                    <!-- Статус расчета прогресса -->
+                                    <TextBlock x:Name="tab3LoopStatus"
+                                               Text="Установите цели и нажмите 'Рассчитать прогресс' для отображения"
+                                               FontWeight="SemiBold"
+                                               Margin="0,8"
+                                               Foreground="#757575"
+                                               TextAlignment="Center" />
+
+                                    <!-- Детальная статистика прогресса -->
+                                    <Grid Margin="0,16,0,0">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*" />
+                                        </Grid.ColumnDefinitions>
+
+                                        <StackPanel Grid.Column="0">
+                                            <TextBlock Text="Детальная статистика прогресса"
+                                                       FontWeight="Bold"
+                                                       FontSize="14"
+                                                       Foreground="#212121"
+                                                       HorizontalAlignment="Center"
+                                                       Margin="0,0,0,12" />
+
+                                            <Border Style="{StaticResource ClickablePanel}"
+                                                    Padding="20"
+                                                    Background="White">
+                                                <Grid>
+                                                    <Grid.ColumnDefinitions>
+                                                        <ColumnDefinition Width="*" />
+                                                        <ColumnDefinition Width="1" />
+                                                        <ColumnDefinition Width="*" />
+                                                    </Grid.ColumnDefinitions>
+
+                                                    <!-- Левая колонка: основные показатели прогресса -->
+                                                    <StackPanel Grid.Column="0">
+                                                        <TextBlock Text="Основные показатели"
+                                                                   FontWeight="SemiBold"
+                                                                   FontSize="13"
+                                                                   Foreground="#7E57C2"
+                                                                   Margin="0,0,0,12" />
+
+                                                        <StackPanel x:Name="tab3StatsPanel"
+                                                                    Margin="0,0,12,0">
+                                                            <!-- Статистика будет добавляться динамически через код -->
+                                                        </StackPanel>
+                                                    </StackPanel>
+
+                                                    <!-- Вертикальный разделитель -->
+                                                    <Rectangle Grid.Column="1"
+                                                               Fill="#EEEEEE"
+                                                               Margin="12,8"
+                                                               HorizontalAlignment="Center"
+                                                               Width="1"
+                                                               Height="120" />
+
+                                                    <!-- Правая колонка: визуализация текущего прогресса -->
+                                                    <StackPanel Grid.Column="2">
+                                                        <TextBlock Text="Текущий прогресс"
+                                                                   FontWeight="SemiBold"
+                                                                   FontSize="13"
+                                                                   Foreground="#7E57C2"
+                                                                   Margin="0,0,0,12" />
+
+                                                        <!-- Прогресс-бар выполнения цели -->
+                                                        <Border Background="#F8F9FA"
+                                                                CornerRadius="8"
+                                                                Padding="16,12"
+                                                                Margin="0,0,0,8">
+                                                            <StackPanel>
+                                                                <TextBlock Text="Общее выполнение:"
+                                                                           FontSize="12"
+                                                                           Foreground="#757575" />
+                                                                <ProgressBar x:Name="tab3VariantProgress"
+                                                                             Style="{StaticResource ModernProgressBar}"
+                                                                             Height="10"
+                                                                             Minimum="0"
+                                                                             Maximum="100"
+                                                                             Value="0"
+                                                                             Margin="0,6,0,4" />
+                                                                <TextBlock x:Name="tab3VariantText"
+                                                                           Text="Неделя 0 из 0"
+                                                                           FontSize="11"
+                                                                           FontWeight="SemiBold"
+                                                                           Foreground="#7E57C2"
+                                                                           HorizontalAlignment="Center" />
+                                                            </StackPanel>
+                                                        </Border>
+
+                                                        <!-- Индикаторы инвариантов цикла -->
+                                                        <StackPanel Orientation="Horizontal"
+                                                                    HorizontalAlignment="Center"
+                                                                    Margin="0,8,0,0">
+                                                            <Border Background="#E8F5E8"
+                                                                    CornerRadius="6"
+                                                                    Padding="8,6"
+                                                                    Margin="2">
+                                                                <StackPanel Orientation="Horizontal">
+                                                                    <TextBlock Text="До шага:"
+                                                                               VerticalAlignment="Center"
+                                                                               FontSize="11" />
+                                                                    <Ellipse x:Name="tab3InvariantBefore"
+                                                                             Width="10"
+                                                                             Height="10"
+                                                                             Fill="#FF5252"
+                                                                             Margin="6,0,0,0" />
+                                                                </StackPanel>
+                                                            </Border>
+                                                            <Border Background="#E8F5E8"
+                                                                    CornerRadius="6"
+                                                                    Padding="8,6"
+                                                                    Margin="2">
+                                                                <StackPanel Orientation="Horizontal">
+                                                                    <TextBlock Text="После шага:"
+                                                                               VerticalAlignment="Center"
+                                                                               FontSize="11" />
+                                                                    <Ellipse x:Name="tab3InvariantAfter"
+                                                                             Width="10"
+                                                                             Height="10"
+                                                                             Fill="#FF5252"
+                                                                             Margin="6,0,0,0" />
+                                                                </StackPanel>
+                                                            </Border>
+                                                        </StackPanel>
+                                                    </StackPanel>
+                                                </Grid>
+                                            </Border>
+                                        </StackPanel>
+                                    </Grid>
+
+                                    <!-- Кнопки управления прогрессом -->
+                                    <StackPanel Orientation="Horizontal"
+                                                Margin="0,16,0,0"
+                                                HorizontalAlignment="Center">
+                                        <Button x:Name="tab3StepBtn"
+                                                Content="Следующая неделя →"
+                                                Style="{StaticResource PrimaryButton}"
+                                                Padding="16,8"
+                                                Click="Tab3Step_Click" />
+                                        <Button x:Name="tab3ResetBtn"
+                                                Content="Начать сначала"
+                                                Style="{StaticResource SecondaryButton}"
+                                                Padding="16,8"
+                                                Margin="8,0,0,0"
+                                                Click="Tab3Reset_Click" />
+                                    </StackPanel>
+
+                                    <!-- Отображение инварианта цикла прогресса -->
+                                    <Grid Margin="0,16,0,0">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*" />
+                                            <ColumnDefinition Width="20" />
+                                            <ColumnDefinition Width="*" />
+                                        </Grid.ColumnDefinitions>
+
+                                        <StackPanel Grid.Column="0">
+                                            <TextBlock Text="Анализ прогресса:"
+                                                       FontWeight="SemiBold"
+                                                       Margin="0,0,0,8" />
+                                            <Border Style="{StaticResource ClickablePanel}"
+                                                    Padding="12"
+                                                    Background="#F5F5F5">
+                                                <TextBlock x:Name="tab3InvariantText"
+                                                           TextWrapping="Wrap"
+                                                           FontSize="12"
+                                                           Foreground="#757575"
+                                                           Text="Инвариант: текущий вес = максимальный прогресс за пройденные недели" />
+                                            </Border>
+                                        </StackPanel>
+                                    </Grid>
+                                </StackPanel>
+                            </Border>
+
+                            <!-- КАРТОЧКА: Оценка эффективности фитнес-программы -->
+                            <Border Style="{StaticResource InteractiveCard}"
+                                    Padding="28"
+                                    Margin="0,16,0,0">
+                                <StackPanel>
+                                    <TextBlock Text="Оценка эффективности программы"
+                                               Style="{StaticResource CardHeader}" />
+                                    <TextBlock Text="Отметьте элементы вашей фитнес-программы"
+                                               Style="{StaticResource CardSubHeader}" />
+
+                                    <!-- Чекбоксы для оценки элементов программы -->
+                                    <StackPanel Margin="0,8">
+                                        <CheckBox x:Name="cbEfficiencyDiet"
+                                                  Content="Сбалансированная диета"
+                                                  Style="{StaticResource InteractiveCheckBox}"
+                                                  Checked="UpdateEfficiencyScore"
+                                                  Unchecked="UpdateEfficiencyScore" />
+                                        <CheckBox x:Name="cbEfficiencyTraining"
+                                                  Content="Регулярные тренировки 3+ раза в неделю"
+                                                  Style="{StaticResource InteractiveCheckBox}"
+                                                  Checked="UpdateEfficiencyScore"
+                                                  Unchecked="UpdateEfficiencyScore" />
+                                        <CheckBox x:Name="cbEfficiencySleep"
+                                                  Content="Сон 7-9 часов ежедневно"
+                                                  Style="{StaticResource InteractiveCheckBox}"
+                                                  Checked="UpdateEfficiencyScore"
+                                                  Unchecked="UpdateEfficiencyScore" />
+                                        <CheckBox x:Name="cbEfficiencyWater"
+                                                  Content="Потребление 2+ литров воды в день"
+                                                  Style="{StaticResource InteractiveCheckBox}"
+                                                  Checked="UpdateEfficiencyScore"
+                                                  Unchecked="UpdateEfficiencyScore" />
+                                    </StackPanel>
+
+                                    <!-- Отобрaжение общей оценки эффективности -->
+                                    <Border Style="{StaticResource ClickablePanel}"
+                                            Background="#F8F9FA"
+                                            Padding="16,12"
+                                            Margin="0,16,0,0">
+                                        <StackPanel>
+                                            <TextBlock Text="Общая оценка эффективности программы:"
+                                                       FontWeight="SemiBold"
+                                                       Margin="0,0,0,4" />
+                                            <TextBlock x:Name="txtEfficiencyResult"
+                                                       Text="0/12"
+                                                       FontSize="16"
+                                                       FontWeight="Bold"
+                                                       Foreground="#757575" />
+                                            <ProgressBar x:Name="efficiencyProgress"
+                                                         Style="{StaticResource ModernProgressBar}"
+                                                         Height="6"
+                                                         Minimum="0"
+                                                         Maximum="12"
+                                                         Value="0"
+                                                         Margin="0,8,0,0" />
+                                        </StackPanel>
+                                    </Border>
+                                </StackPanel>
+                            </Border>
+                        </StackPanel>
+                    </Grid>
+                </Grid>
+            </ScrollViewer>
+        </Grid>
     </Grid>
 </Window>
