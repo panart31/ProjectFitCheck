@@ -1,0 +1,51 @@
+stages:
+  - build
+  - test
+  - package
+
+variables:
+  NUGET_PATH: 'C:\Tools\nuget.exe'
+  MSBUILD_PATH: 'C:\Program Files\Microsoft Visual Studio\2022\Community\MSBuild\Current\Bin\MSBuild.exe'
+
+before_script:
+  - echo "Starting FitCheck CI Pipeline"
+  - chcp 65001
+
+build-job:
+  stage: build
+  tags:
+    - windows
+  script:
+    - echo "Restoring NuGet packages..."
+    - '"$NUGET_PATH" restore FitCheck.sln'
+    - echo "Building solution..."
+    - '"$MSBUILD_PATH" FitCheck.sln /p:Configuration=Release'
+  artifacts:
+    paths:
+      - ClassLibraryFitCheck/bin/Release/
+      - WpfAppFitCheck/bin/Release/
+    expire_in: 1 week
+
+test-job:
+  stage: test
+  tags:
+    - windows
+  script:
+    - echo "Running tests..."
+    - dotnet test FitCheck.sln --configuration Release
+  dependencies:
+    - build-job
+
+package-job:
+  stage: package
+  tags:
+    - windows
+  script:
+    - echo "Creating deployment package..."
+    - dotnet publish WpfAppFitCheck/WpfAppFitCheck.csproj -c Release -o ./publish
+  artifacts:
+    paths:
+      - ./publish/
+    expire_in: 1 month
+  only:
+    - master
